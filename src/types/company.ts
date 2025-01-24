@@ -26,9 +26,14 @@ export interface Company {
   stats: CompanyStats[];
   energyData: EnergyData[];
   description?: string;
+  archived?: boolean;
 }
 
 export interface CompanyStoreState {
-  selectedCompanyId: string | null;
+  selectedCompanyId: string;
+  companies: Company[];
   setSelectedCompanyId: (id: string) => void;
+  addCompany: (company: Omit<Company, "id">) => void;
+  archiveCompany: (id: string) => void;
+  restoreCompany: (id: string) => void;
 }
