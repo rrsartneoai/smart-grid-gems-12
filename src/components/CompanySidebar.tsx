@@ -63,6 +63,8 @@ export function CompanySidebar() {
 
     addCompany({
       name: newProjectName,
+      stats: [],
+      energyData: []
     });
 
     setNewProjectName("");
