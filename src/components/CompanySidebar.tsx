@@ -9,16 +9,21 @@ import { Button } from "@/components/ui/button";
 import { CompanyStoreState } from "@/types/company";
 import { useToast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { useLocation, useNavigate } from "react-router-dom";
 
 export const useCompanyStore = create<CompanyStoreState>((set) => ({
   selectedCompanyId: "1",
   companies: companiesData,
   setSelectedCompanyId: (id: string) => set({ selectedCompanyId: id }),
   addCompany: (company) => set((state) => ({
-    companies: [...state.companies, { ...company, id: String(state.companies.length + 1) }]
+    companies: [...state.companies, { 
+      ...company, 
+      id: String(state.companies.length + 1),
+      stats: [],
+      energyData: [],
+      archived: false
+    }]
   })),
   archiveCompany: (id: string) => set((state) => ({
     companies: state.companies.map(company => 
@@ -58,8 +63,6 @@ export function CompanySidebar() {
 
     addCompany({
       name: newProjectName,
-      stats: [],
-      energyData: [],
     });
 
     setNewProjectName("");
@@ -220,7 +223,7 @@ function SidebarContent({
             <div key={company.id} className="space-y-4">
               <div className="flex items-center gap-2">
                 <Button
-                  variant="outline"
+                  variant={selectedCompanyId === company.id ? "default" : "outline"}
                   className="flex-1"
                   onClick={() => setSelectedCompanyId(company.id)}
                 >
@@ -258,6 +261,9 @@ function SidebarContent({
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Dodaj nowy projekt</DialogTitle>
+                  <DialogDescription>
+                    Wprowadź nazwę nowego projektu poniżej.
+                  </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid gap-2">
