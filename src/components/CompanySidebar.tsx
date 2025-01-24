@@ -35,7 +35,7 @@ export function CompanySidebar() {
   const handleAddCompany = () => {
     toast({
       title: "Funkcja w przygotowaniu",
-      description: "Możliwość dodawania nowych firm będzie dostępna wkrótce.",
+      description: "Możliwość dodawania nowych projektów będzie dostępna wkrótce.",
     });
   };
 
@@ -141,14 +141,14 @@ function SidebarContent({
     <div className="flex h-full flex-col gap-4">
       {!collapsed && (
         <div className="p-6">
-          <h2 className="text-lg font-semibold">Firmy</h2>
+          <h2 className="text-lg font-semibold">Projekty</h2>
           <p className="text-sm text-muted-foreground">
-            Wybierz firmę do monitorowania
+            Wybierz projekt do monitorowania
           </p>
           <div className="mt-4 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
-              placeholder="Szukaj firm..."
+              placeholder="Szukaj projektów..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-9"
@@ -175,13 +175,13 @@ function SidebarContent({
             onClick={handleAddCompany}
           >
             <Plus className="h-4 w-4" />
-            {!collapsed && <span className="ml-2">Dodaj firmę</span>}
+            {!collapsed && <span className="ml-2">Dodaj projekt</span>}
           </Button>
           <Button
             variant="outline"
             className={`mt-2 rounded ${
-    collapsed ? "w-10 p-2 bg-gray-100" : "w-full bg-[#00A36C]" // Changed background color here
-  } text-white`}
+              collapsed ? "w-10 p-2 bg-gray-100" : "w-full bg-[#00A36C]"
+            } text-white`}
             onClick={() => navigate('/assistant')}
           >
             <MessageSquare className="w-4 h-4" />

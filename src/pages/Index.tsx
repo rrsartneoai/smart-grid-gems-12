@@ -8,8 +8,6 @@ import { CompanySidebar } from "@/components/CompanySidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { CompanyAnalysis } from "@/components/analysis/CompanyAnalysis";
-import { IoTStatus } from "@/components/status/IoTStatus";
 import SensorsPanel from "@/components/sensors/SensorsPanel";
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
@@ -21,17 +19,14 @@ import { Tutorial } from "@/components/Tutorial";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useToast } from "@/hooks/use-toast";
 import { LanguageSelector } from "@/components/LanguageSelector";
-import EnergyMap from "@/components/map/EnergyMap";
-import { DeviceStatus } from "@/components/network/DeviceStatus";
-import { NetworkMap } from "@/components/network/NetworkMap";
-import { FailureAnalysis } from "@/components/network/FailureAnalysis";
 import { useTranslation } from 'react-i18next';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { IntegrationsPanel } from "@/components/integrations/IntegrationsPanel";
 import { ExperimentsPanel } from "@/components/experiments/ExperimentsPanel";
 import '../i18n/config';
+
+// ... keep existing code (imports and initial setup)
 
 const Index = () => {
   const { toast } = useToast();
@@ -151,87 +146,14 @@ const Index = () => {
                 transition={{ duration: 0.8 }}
                 className="flex flex-col gap-6"
               >
-                <Tabs defaultValue="spaces" className="w-full">
+                <Tabs defaultValue="sensors" className="w-full">
                   <TabsList className="w-full justify-start overflow-x-auto flex-wrap">
-                    <TabsTrigger value="spaces">{t('spaces')}</TabsTrigger>
-                    <TabsTrigger value="insights">{t('analysis')}</TabsTrigger>
-                    <TabsTrigger value="status">{t('status')}</TabsTrigger>
                     <TabsTrigger value="sensors">{t('sensors')}</TabsTrigger>
-                    <TabsTrigger value="integrations">Integracje</TabsTrigger>
                     <TabsTrigger value="experiments">Eksperymenty</TabsTrigger>
                   </TabsList>
 
-                  <TabsContent value="spaces" className="space-y-6">
-                    <div className="flex justify-end gap-2 mb-4">
-                      <Button
-                        variant="outline"
-                        onClick={() => handleExport('jpg')}
-                      >
-                        Eksportuj do JPG
-                      </Button>
-                      <Button
-                        variant="outline"
-                        onClick={() => handleExport('pdf')}
-                      >
-                        Eksportuj do PDF
-                      </Button>
-                    </div>
-                    <div ref={spacesRef}>
-                      <DndContext collisionDetection={closestCenter}>
-                        <SortableContext items={[]} strategy={rectSortingStrategy}>
-                          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-                            <PowerStats />
-                          </div>
-                        </SortableContext>
-                      </DndContext>
-
-                      <div className="grid gap-6 p-8">
-                        <EnergyChart />
-                      </div>
-
-                      <div className="grid gap-6 p-8">
-                        <DeviceStatus />
-                      </div>
-
-                      <div className="grid gap-6 p-8">
-                        <NetworkMap />
-                      </div>
-
-                      <div className="grid gap-6 p-8">
-                        <FailureAnalysis />
-                      </div>
-
-                      <div className="grid gap-6 p-8">
-                        <EnergyMap />
-                      </div>
-
-                      <div className="mt-8 grid gap-8 md:grid-cols-2">
-                        <div className="w-full">
-                          <h2 className="text-2xl font-bold mb-4">{t('Wgraj pliki')}</h2>
-                          <FileUpload />
-                        </div>
-                        <div className="w-full">
-                          <h2 className="text-2xl font-bold mb-4">{t('Asystent AI')}</h2>
-                          <Chatbot />
-                        </div>
-                      </div>
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="insights">
-                    <CompanyAnalysis />
-                  </TabsContent>
-
-                  <TabsContent value="status">
-                    <IoTStatus />
-                  </TabsContent>
-
                   <TabsContent value="sensors">
                     <SensorsPanel />
-                  </TabsContent>
-
-                  <TabsContent value="integrations">
-                    <IntegrationsPanel />
                   </TabsContent>
 
                   <TabsContent value="experiments">
