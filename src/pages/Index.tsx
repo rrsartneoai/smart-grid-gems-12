@@ -21,6 +21,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Bot, Upload, UserCog } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ExperimentsPanel } from "@/components/experiments/ExperimentsPanel";
+import { ApiKeySettings } from "@/components/settings/ApiKeySettings";
 import '../i18n/config';
 
 const Index = () => {

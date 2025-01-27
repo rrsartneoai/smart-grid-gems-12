@@ -15,6 +15,11 @@ export default function SensorsPanel() {
     sensorsData[city].name
   );
 
+  const handleExport = () => {
+    // Export functionality
+    console.log("Exporting data...");
+  };
+
   return (
     <div className="space-y-6">
       <DeviceStatus />
@@ -45,7 +50,7 @@ export default function SensorsPanel() {
             <AlertsConfig />
           </TabsContent>
           <TabsContent value="export">
-            <ExportData />
+            <ExportData onExport={handleExport} />
           </TabsContent>
         </Tabs>
       </Card>
