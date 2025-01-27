@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { useTranslation } from "react-i18next";
+import { DeviceStatus } from "../network/DeviceStatus";
 
 const SensorsPanel = () => {
   const [selectedCity, setSelectedCity] = useState<string>("gdansk");
@@ -56,7 +57,22 @@ const SensorsPanel = () => {
             pdf.save('czujniki.pdf');
           }
           break;
-        // ... keep existing code (xlsx and csv export logic)
+        case 'xlsx':
+          const wb = XLSX.utils.book_new();
+          const ws = XLSX.utils.json_to_sheet(currentCityData.sensors);
+          XLSX.utils.book_append_sheet(wb, ws, "Czujniki");
+          XLSX.writeFile(wb, "czujniki.xlsx");
+          break;
+        case 'csv':
+          const csvContent = currentCityData.sensors
+            .map(sensor => `${sensor.name},${sensor.value},${sensor.unit},${sensor.status}`)
+            .join('\n');
+          const blob = new Blob([`Nazwa,Wartość,Jednostka,Status\n${csvContent}`], { type: 'text/csv;charset=utf-8;' });
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'czujniki.csv';
+          link.click();
+          break;
       }
     } catch (error) {
       console.error("Błąd eksportu:", error);
@@ -65,7 +81,9 @@ const SensorsPanel = () => {
 
   return (
     <div className="w-full max-w-[1400px] mx-auto px-4" id="sensors-panel">
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-8">
+        <DeviceStatus />
+
         <div className="flex items-center justify-between">
           <h2 className="text-xl sm:text-2xl font-bold">Czujniki</h2>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
