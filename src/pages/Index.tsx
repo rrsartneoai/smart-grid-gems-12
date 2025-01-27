@@ -26,8 +26,6 @@ import jsPDF from 'jspdf';
 import { ExperimentsPanel } from "@/components/experiments/ExperimentsPanel";
 import '../i18n/config';
 
-// ... keep existing code (imports and initial setup)
-
 const Index = () => {
   const { toast } = useToast();
   const { t } = useTranslation();
