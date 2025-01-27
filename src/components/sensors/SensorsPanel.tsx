@@ -1,23 +1,19 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SensorsData } from "./SensorsData";
+import { sensorsData } from "./SensorsData";
 import { DataComparison } from "./DataComparison";
 import { AlertsConfig } from "./AlertsConfig";
 import { ExportData } from "./ExportData";
 import { CitySelector } from "./CitySelector";
 import { DeviceStatus } from "../network/DeviceStatus";
-import * as XLSX from 'xlsx';
+import { SensorCard } from "./SensorCard";
 
 export default function SensorsPanel() {
-  const [data, setData] = useState([]); // Example state for sensor data
-
-  const handleExport = () => {
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(data);
-    XLSX.utils.book_append_sheet(wb, ws, "Sensors Data");
-    XLSX.writeFile(wb, "sensors-data.xlsx");
-  };
+  const [selectedCity, setSelectedCity] = useState("gdansk");
+  const cities = Object.keys(sensorsData).map(city => 
+    sensorsData[city].name
+  );
 
   return (
     <div className="space-y-6">
@@ -31,8 +27,16 @@ export default function SensorsPanel() {
             <TabsTrigger value="export">Eksport</TabsTrigger>
           </TabsList>
           <TabsContent value="data">
-            <CitySelector />
-            <SensorsData />
+            <CitySelector 
+              cities={cities}
+              selectedCity={selectedCity}
+              onCitySelect={setSelectedCity}
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {sensorsData[selectedCity].sensors.map((sensor, index) => (
+                <SensorCard key={index} {...sensor} />
+              ))}
+            </div>
           </TabsContent>
           <TabsContent value="comparison">
             <DataComparison />
@@ -41,7 +45,7 @@ export default function SensorsPanel() {
             <AlertsConfig />
           </TabsContent>
           <TabsContent value="export">
-            <ExportData onExport={handleExport} />
+            <ExportData />
           </TabsContent>
         </Tabs>
       </Card>
