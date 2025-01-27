@@ -21,14 +21,15 @@ import { useToast } from "@/hooks/use-toast";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useTranslation } from 'react-i18next';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+import { Bot, Upload, UserCog } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { ExperimentsPanel } from "@/components/experiments/ExperimentsPanel";
 import '../i18n/config';
 
 const Index = () => {
   const { toast } = useToast();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const spacesRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
   const headerOpacity = useTransform(scrollY, [0, 100], [1, 0]);
@@ -119,14 +120,31 @@ const Index = () => {
           <div className="flex items-center gap-4">
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger>
-                  <LanguageSelector />
+                <TooltipTrigger asChild>
+                  <Button variant="outline" onClick={() => navigate('/assistant')}>
+                    <Bot className="h-4 w-4 mr-2" />
+                    Asystent AI [RAG]
+                  </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{t('changeLanguage', 'Change language')}</p>
+                  <p>Asystent AI z obsługą RAG</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="outline" onClick={() => navigate('/admin')}>
+                    <UserCog className="h-4 w-4 mr-2" />
+                    Admin login
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Panel administracyjny</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <LanguageSelector />
             <NotificationCenter />
             <DarkModeToggle />
           </div>
@@ -147,11 +165,27 @@ const Index = () => {
                 <Tabs defaultValue="sensors" className="w-full">
                   <TabsList className="w-full justify-start overflow-x-auto flex-wrap">
                     <TabsTrigger value="sensors">{t('sensors')}</TabsTrigger>
+                    <TabsTrigger value="files">Wgraj pliki</TabsTrigger>
+                    <TabsTrigger value="assistant">Asystent AI</TabsTrigger>
                     <TabsTrigger value="experiments">Eksperymenty</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="sensors">
                     <SensorsPanel />
+                  </TabsContent>
+
+                  <TabsContent value="files">
+                    <div className="space-y-6">
+                      <h2 className="text-2xl font-bold">Wgraj pliki</h2>
+                      <FileUpload />
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="assistant">
+                    <div className="space-y-6">
+                      <h2 className="text-2xl font-bold">Asystent AI</h2>
+                      <Chatbot />
+                    </div>
                   </TabsContent>
 
                   <TabsContent value="experiments">
