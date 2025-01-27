@@ -6,8 +6,6 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import SensorsPanel from "@/components/sensors/SensorsPanel";
-import { DndContext, closestCenter } from '@dnd-kit/core';
-import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
 import { useEffect, useRef } from "react";
 import { FloatingChatbot } from "@/components/FloatingChatbot";
 import { Chatbot } from "@/components/Chatbot";

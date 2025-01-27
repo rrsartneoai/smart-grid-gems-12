@@ -41,7 +41,7 @@ export function ApiKeySettings() {
         title: "Sukces",
         description: "Klucz API został pomyślnie zapisany.",
       });
-      window.location.reload(); // Odśwież stronę, aby zastosować nowy klucz
+      window.location.reload();
     } else {
       toast({
         variant: "destructive",
