@@ -16,7 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useTranslation } from 'react-i18next';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Bot, Upload, UserCog } from "lucide-react";
+import { Bot, UserCog } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ExperimentsPanel } from "@/components/experiments/ExperimentsPanel";
 import { ApiKeySettings } from "@/components/settings/ApiKeySettings";
