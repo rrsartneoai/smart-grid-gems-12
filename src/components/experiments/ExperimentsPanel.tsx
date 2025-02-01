@@ -5,6 +5,10 @@ import { EnergyCard } from "./energy/EnergyCard";
 import { BikeStationsCard } from "./bikes/BikeStationsCard";
 import { ChargingStationsCard } from "./charging/ChargingStationsCard";
 
+interface CityProps {
+  city: string;
+}
+
 export function ExperimentsPanel() {
   const [selectedCity, setSelectedCity] = useState("gdansk");
 
