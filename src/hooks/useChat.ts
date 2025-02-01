@@ -17,25 +17,10 @@ interface Message {
 const getDashboardValue = (query: string): { text: string; visualizations?: Message["dataVisualizations"] } => {
   const lowercaseQuery = query.toLowerCase();
   
-  // Check for visualization requests
-  if (lowercaseQuery.includes("zużycie") || lowercaseQuery.includes("zuzycie")) {
+  if (lowercaseQuery.includes("jakość powietrza") || lowercaseQuery.includes("zanieczyszczenie")) {
     return {
-      text: "Oto wykres zużycia energii w czasie:",
-      visualizations: [{ type: "consumption", title: "Zużycie energii" }]
-    };
-  }
-  
-  if (lowercaseQuery.includes("produkcja")) {
-    return {
-      text: "Oto wykres produkcji energii w czasie:",
-      visualizations: [{ type: "production", title: "Produkcja energii" }]
-    };
-  }
-  
-  if (lowercaseQuery.includes("wydajność") || lowercaseQuery.includes("wydajnosc")) {
-    return {
-      text: "Oto wykres wydajności w czasie:",
-      visualizations: [{ type: "efficiency", title: "Wydajność" }]
+      text: "Sprawdzam aktualne dane o jakości powietrza w Twojej okolicy...",
+      visualizations: [{ type: "consumption", title: "Jakość powietrza" }]
     };
   }
 
@@ -50,14 +35,14 @@ const getDashboardValue = (query: string): { text: string; visualizations?: Mess
     };
   }
 
-  return { text: "Nie znalazłem tej informacji w panelu." };
+  return { text: "Przepraszam, nie znalazłem odpowiednich danych. Czy możesz sprecyzować swoje pytanie?" };
 };
 
 export const useChat = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Witaj! Jestem twoim asystentem sieci energetycznej. Jak mogę Ci pomóc?",
+      content: "Witaj! Jestem asystentem monitorowania jakości powietrza. Mogę pomóc Ci sprawdzić aktualne poziomy zanieczyszczeń, porównać dane między lokalizacjami lub przeanalizować trendy. W czym mogę Ci pomóc?",
       timestamp: new Date(),
     },
   ]);
@@ -68,7 +53,7 @@ export const useChat = () => {
     setMessages([
       {
         role: "assistant",
-        content: "Witaj! Jestem twoim asystentem sieci energetycznej. Jak mogę Ci pomóc?",
+        content: "Witaj! Jestem asystentem monitorowania jakości powietrza. Mogę pomóc Ci sprawdzić aktualne poziomy zanieczyszczeń, porównać dane między lokalizacjami lub przeanalizować trendy. W czym mogę Ci pomóc?",
         timestamp: new Date(),
       },
     ]);
@@ -81,7 +66,7 @@ export const useChat = () => {
   const { mutate: sendMessage, isPending } = useMutation({
     mutationFn: async (input: string) => {
       const dashboardValue = getDashboardValue(input);
-      if (dashboardValue.text !== "Nie znalazłem tej informacji w panelu.") {
+      if (dashboardValue.text !== "Przepraszam, nie znalazłem odpowiednich danych. Czy możesz sprecyzować swoje pytanie?") {
         return dashboardValue;
       }
       const response = await generateRAGResponse(input);

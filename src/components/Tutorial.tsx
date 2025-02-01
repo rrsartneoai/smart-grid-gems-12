@@ -11,32 +11,28 @@ import { Button } from "@/components/ui/button";
 
 const tutorialSteps = [
   {
-    title: "Witaj w Panelu Monitorowania Sieci Energetycznej",
-    description: "Ten panel pomoże Ci monitorować i analizować dane z inteligentnej sieci energetycznej. Przeprowadzimy Cię przez najważniejsze funkcje systemu."
+    title: "Witaj w Systemie Monitorowania Jakości Powietrza",
+    description: "Ten panel pomoże Ci monitorować i analizować jakość powietrza w regionie pomorskim. Przeprowadzimy Cię przez najważniejsze funkcje systemu."
   },
   {
-    title: "Asystent AI i Analiza Danych",
-    description: "Kliknij w przycisk 'Asystent AI' w menu, aby zadać pytania dotyczące sieci lub przeanalizować dane. Możesz również wgrać pliki do analizy poprzez przeciągnięcie ich do wskazanego obszaru."
+    title: "Asystent Smart Grid",
+    description: "Kliknij w przycisk 'Asystent Smart Grid' aby zadać pytania dotyczące jakości powietrza w Twojej okolicy. Asystent pomoże Ci zinterpretować dane i udzieli szczegółowych informacji."
   },
   {
-    title: "Personalizacja i Nawigacja",
-    description: "Użyj zakładek na górze, aby przełączać się między różnymi widokami: Przestrzenie, Analiza, Status, Czujniki. Możesz dostosować układ kafelków do swoich potrzeb poprzez ich przeciąganie."
+    title: "Mapa Jakości Powietrza",
+    description: "Sprawdź interaktywną mapę pokazującą poziomy zanieczyszczeń w różnych lokalizacjach. Możesz porównać dane między miastami i zobaczyć trendy czasowe."
   },
   {
-    title: "Monitorowanie w Czasie Rzeczywistym",
-    description: "Kafelki pokazują aktualne dane o zużyciu energii i statusie sieci. Kliknij w kafelek, aby zobaczyć szczegółowe statystyki i wykresy."
+    title: "Czujniki i Pomiary",
+    description: "Panel czujników pokazuje aktualne odczyty PM2.5, PM10, oraz innych substancji w powietrzu. Kliknij w poszczególne kafelki, aby zobaczyć szczegółowe statystyki."
   },
   {
-    title: "Mapa i Lokalizacje",
-    description: "Mapa pokazuje rozmieszczenie elementów sieci. Możesz przybliżać i oddalać widok oraz klikać w znaczniki, aby zobaczyć szczegóły każdej lokalizacji."
+    title: "Analiza Danych",
+    description: "W sekcji 'Dane z Pomorskiego' znajdziesz szczegółowe analizy jakości powietrza dla każdego miasta, historyczne trendy i prognozy."
   },
   {
-    title: "Eksperymenty i Integracje",
-    description: "Sprawdź zakładki 'Eksperymenty' i 'Integracje', aby odkryć dodatkowe funkcje, takie jak monitoring stacji rowerowych czy analiza pogody."
-  },
-  {
-    title: "Dostosowanie Wyglądu",
-    description: "W prawym górnym rogu znajdziesz przełącznik trybu ciemnego/jasnego oraz wybór języka. Dostosuj interfejs do swoich preferencji."
+    title: "Alerty i Powiadomienia",
+    description: "System automatycznie powiadomi Cię o przekroczeniu norm jakości powietrza lub wysokim stężeniu substancji szkodliwych."
   }
 ];
 
@@ -45,7 +41,6 @@ export function Tutorial() {
   const [currentStep, setCurrentStep] = useState(0);
 
   useEffect(() => {
-    // Sprawdź, czy samouczek był już wyświetlony
     const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
     if (!hasSeenTutorial) {
       setIsOpen(true);

@@ -122,7 +122,7 @@ const Index = () => {
                     <TabsTrigger value="sensors">{t('sensors')}</TabsTrigger>
                     <TabsTrigger value="files">Wgraj pliki</TabsTrigger>
                     <TabsTrigger value="assistant">Asystent AI</TabsTrigger>
-                    <TabsTrigger value="experiments">Eksperymenty</TabsTrigger>
+                    <TabsTrigger value="pomeranian-data">Dane z Pomorskiego</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="sensors">
@@ -143,7 +143,7 @@ const Index = () => {
                     </div>
                   </TabsContent>
 
-                  <TabsContent value="experiments">
+                  <TabsContent value="pomeranian-data">
                     <ExperimentsPanel />
                   </TabsContent>
                 </Tabs>
