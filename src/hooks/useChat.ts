@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import { generateRAGResponse } from "@/utils/ragUtils";
-import { companiesData } from "@/data/companies";
+import { useAirQualityData } from "@/services/airQualityService";
 
 interface Message {
   role: "user" | "assistant";
@@ -14,28 +13,28 @@ interface Message {
   }>;
 }
 
-const getDashboardValue = (query: string): { text: string; visualizations?: Message["dataVisualizations"] } => {
+const formatAirQualityResponse = (data: any[], query: string) => {
   const lowercaseQuery = query.toLowerCase();
   
-  if (lowercaseQuery.includes("jakość powietrza") || lowercaseQuery.includes("zanieczyszczenie")) {
-    return {
-      text: "Sprawdzam aktualne dane o jakości powietrza w Twojej okolicy...",
-      visualizations: [{ type: "consumption", title: "Jakość powietrza" }]
-    };
+  if (lowercaseQuery.includes("pm2.5") || lowercaseQuery.includes("pm10")) {
+    return data.map(city => 
+      `${city.city}:\nPM2.5: ${city.pm25} µg/m³\nPM10: ${city.pm10} µg/m³`
+    ).join('\n\n');
   }
-
-  const matchingStat = companiesData[0]?.stats.find(stat => {
-    const title = stat.title.toLowerCase();
-    return lowercaseQuery.includes(title);
-  });
-
-  if (matchingStat) {
-    return {
-      text: `${matchingStat.title}: ${matchingStat.value}${matchingStat.unit ? ' ' + matchingStat.unit : ''} (${matchingStat.description})`
-    };
+  
+  if (lowercaseQuery.includes("rakotwórcz") || lowercaseQuery.includes("substancj")) {
+    return data.map(city => 
+      `${city.city}:\nNO₂: ${city.no2} µg/m³\nSO₂: ${city.so2} µg/m³\nO₃: ${city.o3} µg/m³\nCO: ${city.co} µg/m³`
+    ).join('\n\n');
   }
-
-  return { text: "Przepraszam, nie znalazłem odpowiednich danych. Czy możesz sprecyzować swoje pytanie?" };
+  
+  if (lowercaseQuery.includes("trend") || lowercaseQuery.includes("analiz")) {
+    return "Analiza trendu zostanie przedstawiona na wykresie poniżej...";
+  }
+  
+  return data.map(city => 
+    `${city.city}:\nPM2.5: ${city.pm25} µg/m³\nPM10: ${city.pm10} µg/m³\nNO₂: ${city.no2} µg/m³`
+  ).join('\n\n');
 };
 
 export const useChat = () => {
@@ -48,6 +47,7 @@ export const useChat = () => {
   ]);
   const [input, setInput] = useState("");
   const { toast } = useToast();
+  const { data: airQualityData } = useAirQualityData();
 
   const clearConversation = () => {
     setMessages([
@@ -65,27 +65,24 @@ export const useChat = () => {
 
   const { mutate: sendMessage, isPending } = useMutation({
     mutationFn: async (input: string) => {
-      const dashboardValue = getDashboardValue(input);
-      if (dashboardValue.text !== "Przepraszam, nie znalazłem odpowiednich danych. Czy możesz sprecyzować swoje pytanie?") {
-        return dashboardValue;
+      if (!airQualityData) {
+        throw new Error("Brak danych o jakości powietrza");
       }
-      const response = await generateRAGResponse(input);
-      return { text: response };
+      return formatAirQualityResponse(airQualityData, input);
     },
     onSuccess: (response) => {
       const newMessage = {
         role: "assistant" as const,
-        content: response.text,
+        content: response,
         timestamp: new Date(),
-        dataVisualizations: response.visualizations,
       };
       setMessages((prev) => [...prev, newMessage]);
     },
     onError: () => {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to get a response. Please try again.",
+        title: "Błąd",
+        description: "Nie udało się uzyskać odpowiedzi. Spróbuj ponownie.",
       });
     },
   });

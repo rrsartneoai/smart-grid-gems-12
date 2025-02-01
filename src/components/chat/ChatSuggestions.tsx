@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { useAirQualityData } from "@/services/airQualityService";
 
 const suggestions = [
   "Jaka jest jakość powietrza w okolicy?",
@@ -13,6 +14,14 @@ interface ChatSuggestionsProps {
 }
 
 export function ChatSuggestions({ onSuggestionClick }: ChatSuggestionsProps) {
+  const { data: airQualityData } = useAirQualityData();
+
+  const handleSuggestionClick = (suggestion: string) => {
+    if (airQualityData) {
+      onSuggestionClick(suggestion);
+    }
+  };
+
   return (
     <div className="flex flex-wrap gap-2 p-4">
       {suggestions.map((suggestion, index) => (
@@ -21,7 +30,7 @@ export function ChatSuggestions({ onSuggestionClick }: ChatSuggestionsProps) {
           variant="outline"
           size="sm"
           className="text-sm"
-          onClick={() => onSuggestionClick(suggestion)}
+          onClick={() => handleSuggestionClick(suggestion)}
         >
           {suggestion}
         </Button>
