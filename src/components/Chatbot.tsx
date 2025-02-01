@@ -92,12 +92,10 @@ export function Chatbot() {
 
   return (
     <Card className="w-full max-w-2xl mx-auto h-[600px] md:h-[700px] flex flex-col bg-background shadow-lg rounded-xl">
-      <ChatHeader
-        isSpeaking={conversation.isSpeaking}
-        onStopSpeaking={handleStopSpeaking}
-        onSaveHistory={handleSaveHistory}
-        isTyping={isTyping}
-      />
+      <div className="border-b p-4">
+        <h2 className="text-xl font-semibold">Asystent Smart grid</h2>
+        <p className="text-sm text-muted-foreground">Monitorowanie jakości powietrza</p>
+      </div>
       
       <ScrollArea ref={scrollAreaRef} className="flex-1 p-4 md:p-6 overflow-y-auto">
         {messages.length === 1 && (

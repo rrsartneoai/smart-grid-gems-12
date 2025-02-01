@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 
 const suggestions = [
-  "Jak wygląda zużycie energii w ostatnim miesiącu?",
-  "Pokaż analizę wydajności systemu",
-  "Jakie są trendy w produkcji energii?",
-  "Wygeneruj raport z ostatniego kwartału",
-  "Porównaj wydajność między lokalizacjami"
+  "Jaka jest jakość powietrza w okolicy?",
+  "Pokaż poziom PM2.5 i PM10",
+  "Sprawdź stężenie substancji rakotwórczych",
+  "Analiza trendu zanieczyszczeń powietrza",
+  "Porównaj jakość powietrza między lokalizacjami"
 ];
 
 interface ChatSuggestionsProps {

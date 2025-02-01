@@ -1,4 +1,4 @@
-import { Thermometer, Cloud, Wind, Atom, Droplet, Volume2, Gauge, Sun } from "lucide-react";
+import { Thermometer, Cloud, Wind, Atom, Droplet, Volume2, Gauge, Sun, Radiation } from "lucide-react";
 
 export interface SensorData {
   icon: React.ReactNode;
@@ -24,6 +24,7 @@ const sensorDescriptions = {
   noise: "Poziom hałasu - wpływa na komfort i koncentrację. Poziomy powyżej 65 dBA mogą być uciążliwe.",
   pressure: "Ciśnienie atmosferyczne - wpływa na samopoczucie. Nagłe zmiany mogą powodować dolegliwości u osób wrażliwych.",
   light: "Natężenie światła - wpływa na komfort wizualny i produktywność. Optymalne poziomy zależą od rodzaju wykonywanej pracy.",
+  radiation: "Poziom promieniowania - monitoring substancji promieniotwórczych w powietrzu. Kluczowy parametr dla bezpieczeństwa.",
 };
 
 export const sensorsData: Record<string, CityData> = {
@@ -102,6 +103,14 @@ export const sensorsData: Record<string, CityData> = {
         status: "Good",
         description: sensorDescriptions.light,
       },
+      {
+        icon: <Radiation className="w-5 h-5" />,
+        name: "Radiation",
+        value: "0.12",
+        unit: "µSv/h",
+        status: "Good",
+        description: sensorDescriptions.radiation,
+      },
     ],
   },
   gdynia: {
@@ -178,6 +187,14 @@ export const sensorsData: Record<string, CityData> = {
         unit: "%",
         status: "Good",
         description: sensorDescriptions.light,
+      },
+      {
+        icon: <Radiation className="w-5 h-5" />,
+        name: "Radiation",
+        value: "0.11",
+        unit: "µSv/h",
+        status: "Good",
+        description: sensorDescriptions.radiation,
       },
     ],
   },
@@ -256,6 +273,14 @@ export const sensorsData: Record<string, CityData> = {
         status: "Good",
         description: sensorDescriptions.light,
       },
+      {
+        icon: <Radiation className="w-5 h-5" />,
+        name: "Radiation",
+        value: "0.10",
+        unit: "µSv/h",
+        status: "Good",
+        description: sensorDescriptions.radiation,
+      },
     ],
   },
   slupsk: {
@@ -333,6 +358,14 @@ export const sensorsData: Record<string, CityData> = {
         status: "Good",
         description: sensorDescriptions.light,
       },
+      {
+        icon: <Radiation className="w-5 h-5" />,
+        name: "Radiation",
+        value: "0.09",
+        unit: "µSv/h",
+        status: "Good",
+        description: sensorDescriptions.radiation,
+      },
     ],
   },
   ustka: {
@@ -409,6 +442,14 @@ export const sensorsData: Record<string, CityData> = {
         unit: "%",
         status: "Good",
         description: sensorDescriptions.light,
+      },
+      {
+        icon: <Radiation className="w-5 h-5" />,
+        name: "Radiation",
+        value: "0.10",
+        unit: "µSv/h",
+        status: "Good",
+        description: sensorDescriptions.radiation,
       },
     ],
   },
