@@ -105,7 +105,7 @@ export function DeviceStatus() {
         <div>
           <h2 className="text-2xl font-bold">Status urządzeń</h2>
           <p className="text-muted-foreground">
-            Monitorowanie stanu urządzeń w sieci energetycznej
+            Monitorowanie stanu urządzeń jakości powietrza
           </p>
         </div>
         <div className="flex gap-2">
@@ -123,7 +123,6 @@ export function DeviceStatus() {
           </Badge>
         </div>
       </div>
-
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {mockDevices.map((device) => (
           <motion.div
