@@ -14,7 +14,7 @@ export const ExperimentsPanel = () => {
         <CardContent>
           <div className="aspect-video rounded-lg overflow-hidden bg-muted">
             <iframe
-              src="https://airly.org/map/pl/#52.4069200,16.9299300,11"
+              src="https://airly.org/map/pl/#54.3520,18.6466,11"
               className="w-full h-full border-0"
               title="Mapa jakości powietrza"
             />
