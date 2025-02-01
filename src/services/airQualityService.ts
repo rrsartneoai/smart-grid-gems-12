@@ -1,7 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 
-const AIRLY_API_KEY = localStorage.getItem('AIRLY_API_KEY') || '';
-
 interface AirQualityData {
   pm25: number;
   pm10: number;
@@ -22,16 +20,27 @@ const cities = [
 ];
 
 export const fetchAirQualityData = async (city: { lat: number; lon: number; name: string }): Promise<AirQualityData> => {
+  const apiKey = localStorage.getItem('AIRLY_API_KEY');
+  
+  if (!apiKey) {
+    throw new Error('Airly API key not found. Please set your API key in the settings.');
+  }
+
   const response = await fetch(
     `https://airapi.airly.eu/v2/measurements/point?lat=${city.lat}&lng=${city.lon}`,
     {
       headers: {
-        'apikey': AIRLY_API_KEY
+        'Accept': 'application/json',
+        'apikey': apiKey
       }
     }
   );
 
   if (!response.ok) {
+    if (response.status === 401) {
+      localStorage.removeItem('AIRLY_API_KEY'); // Clear invalid key
+      throw new Error('Invalid Airly API key. Please check your API key in the settings.');
+    }
     throw new Error('Failed to fetch air quality data');
   }
 
@@ -55,6 +64,7 @@ export const useAirQualityData = () => {
       const promises = cities.map(city => fetchAirQualityData(city));
       return Promise.all(promises);
     },
+    retry: false,
     refetchInterval: 300000 // Refresh every 5 minutes
   });
 };
