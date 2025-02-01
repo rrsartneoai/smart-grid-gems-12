@@ -9,19 +9,15 @@ import { CitySelector } from "./CitySelector";
 import { DeviceStatus } from "../network/DeviceStatus";
 import { SensorCard } from "./SensorCard";
 import { useToast } from "@/hooks/use-toast";
-import { Button } from "../ui/button";
 
 export default function SensorsPanel() {
   const [selectedCity, setSelectedCity] = useState("gdansk");
   const { toast } = useToast();
   
-  const cities = [
-    { id: "gdansk", name: "Gdańsk" },
-    { id: "gdynia", name: "Gdynia" },
-    { id: "sopot", name: "Sopot" },
-    { id: "slupsk", name: "Słupsk" },
-    { id: "ustka", name: "Ustka" }
-  ];
+  // Get cities from sensorsData, with error handling
+  const cities = Object.keys(sensorsData || {}).map(city => 
+    sensorsData[city]?.name || city
+  );
 
   const handleExport = () => {
     toast({
@@ -44,10 +40,6 @@ export default function SensorsPanel() {
     <div className="space-y-6">
       <DeviceStatus />
       <Card className="p-4">
-        <div className="mb-4">
-          <h2 className="text-2xl font-bold">Status urządzeń</h2>
-          <p className="text-muted-foreground">Monitorowanie stanu urządzeń w sieci smart grid</p>
-        </div>
         <Tabs defaultValue="data">
           <TabsList>
             <TabsTrigger value="data">Dane z czujników</TabsTrigger>
@@ -56,21 +48,11 @@ export default function SensorsPanel() {
             <TabsTrigger value="export">Eksport</TabsTrigger>
           </TabsList>
           <TabsContent value="data" className="sensors-panel">
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold mb-4">Dane z Pomorskiego</h3>
-              <div className="flex gap-2 flex-wrap">
-                {cities.map((city) => (
-                  <Button
-                    key={city.id}
-                    variant={selectedCity === city.id ? "default" : "outline"}
-                    onClick={() => setSelectedCity(city.id)}
-                    className="min-w-[100px]"
-                  >
-                    {city.name}
-                  </Button>
-                ))}
-              </div>
-            </div>
+            <CitySelector 
+              cities={cities}
+              selectedCity={selectedCity}
+              onCitySelect={setSelectedCity}
+            />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {selectedCityData.sensors.map((sensor, index) => (
                 <SensorCard key={index} {...sensor} />

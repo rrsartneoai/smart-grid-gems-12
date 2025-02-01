@@ -25,29 +25,22 @@ export const generateRAGResponse = async (query: string): Promise<string> => {
     }
 
     const context = relevantChunks.join('\n\n');
-    const prompt = `Na podstawie poniższego kontekstu, odpowiedz na pytanie. Jeśli odpowiedź nie znajduje się w kontekście, powiedz o tym.
+    const prompt = `Na podstawie poniższego kontekstu, ${query === 'podsumuj' ? 'przedstaw krótkie podsumowanie głównych punktów dokumentu' : 'odpowiedz na pytanie'}. Jeśli odpowiedź nie znajduje się w kontekście, powiedz o tym.
 
 Kontekst:
 ${context}
 
-Pytanie: ${query}
-
-Odpowiedz w języku polskim, używając pełnych zdań.`;
+${query === 'podsumuj' ? 'Podsumuj najważniejsze informacje z dokumentu.' : `Pytanie: ${query}`}`;
 
     console.log('Wysyłam zapytanie do Gemini z kontekstem długości:', context.length);
     const response = await getGeminiResponse(prompt);
-    
-    if (!response) {
-      throw new Error("Nie otrzymano odpowiedzi od modelu");
-    }
-    
     return response;
   } catch (error) {
     console.error('Błąd podczas generowania odpowiedzi:', error);
     toast({
+      variant: "destructive",
       title: "Błąd",
       description: "Nie udało się wygenerować odpowiedzi. Spróbuj ponownie.",
-      variant: "destructive",
     });
     throw error;
   }
@@ -62,6 +55,11 @@ export const searchRelevantChunks = (query: string): string[] => {
       return [];
     }
 
+    if (query.toLowerCase() === 'podsumuj') {
+      console.log('Zapytanie o podsumowanie - zwracam wszystkie fragmenty');
+      return documentChunks.map(chunk => chunk.text);
+    }
+
     const results = calculateTFIDF(
       query,
       documentChunks.map(chunk => chunk.text)
@@ -73,6 +71,46 @@ export const searchRelevantChunks = (query: string): string[] => {
     return [];
   }
 };
+
+async function extractMainTopics(text: string): Promise<string[]> {
+  try {
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    
+    const prompt = `
+      Przeanalizuj poniższy tekst i wypisz 5 najważniejszych zagadnień lub tematów z tego dokumentu:
+      ${text}
+      
+      Odpowiedź sformatuj jako prostą listę 5 najważniejszych zagadnień, po jednym w linii.
+      Zwróć TYLKO te 5 zagadnień, nic więcej.
+      
+      Przykładowy format odpowiedzi:
+      1. Pierwsze zagadnienie
+      2. Drugie zagadnienie
+      3. Trzecie zagadnienie
+      4. Czwarte zagadnienie
+      5. Piąte zagadnienie
+    `;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const topicsString = response.text();
+    return topicsString.split('\n').filter(line => line.trim() !== '').map(line => line.replace(/^\d+\.\s*/, '').trim());
+  } catch (error) {
+    console.error('Error extracting topics:', error);
+    toast({
+      variant: "destructive",
+      title: "Błąd",
+      description: "Nie udało się przetworzyć tematów dokumentu.",
+    });
+    return [
+      "Nie udało się przetworzyć dokumentu",
+      "Spróbuj ponownie później",
+      "Sprawdź czy dokument zawiera tekst",
+      "Upewnij się, że dokument jest czytelny",
+      "Skontaktuj się z administratorem systemu"
+    ];
+  }
+}
 
 export const processDocumentForRAG = async (text: string) => {
   try {
@@ -97,6 +135,11 @@ export const processDocumentForRAG = async (text: string) => {
 
     const mainTopics = await extractMainTopics(text);
 
+    toast({
+      title: "Sukces",
+      description: `Dokument został pomyślnie przetworzony na ${documentChunks.length} fragmentów`,
+    });
+
     return {
       message: `Dokument został przetworzony na ${documentChunks.length} fragmentów`,
       chunks: documentChunks,
@@ -105,37 +148,10 @@ export const processDocumentForRAG = async (text: string) => {
   } catch (error) {
     console.error("Błąd podczas przetwarzania dokumentu:", error);
     toast({
+      variant: "destructive",
       title: "Błąd",
       description: "Wystąpił błąd podczas przetwarzania dokumentu. Spróbuj ponownie.",
-      variant: "destructive",
     });
     throw error;
   }
 };
-
-async function extractMainTopics(text: string): Promise<string[]> {
-  try {
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    
-    const prompt = `
-      Przeanalizuj poniższy tekst i wypisz 5 najważniejszych zagadnień lub tematów z tego dokumentu:
-      ${text}
-      
-      Odpowiedź sformatuj jako prostą listę 5 najważniejszych zagadnień, po jednym w linii.
-      Zwróć TYLKO te 5 zagadnień, nic więcej.
-    `;
-
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const topicsString = response.text();
-    return topicsString.split('\n').filter(line => line.trim() !== '').map(line => line.replace(/^\d+\.\s*/, '').trim());
-  } catch (error) {
-    console.error('Error extracting topics:', error);
-    toast({
-      title: "Błąd",
-      description: "Nie udało się przetworzyć tematów dokumentu.",
-      variant: "destructive",
-    });
-    throw error;
-  }
-}
