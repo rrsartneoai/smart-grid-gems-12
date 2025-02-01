@@ -30,7 +30,9 @@ export const generateRAGResponse = async (query: string): Promise<string> => {
 Kontekst:
 ${context}
 
-Pytanie: ${query}`;
+Pytanie: ${query}
+
+Odpowiedz w języku polskim, używając pełnych zdań.`;
 
     console.log('Wysyłam zapytanie do Gemini z kontekstem długości:', context.length);
     const response = await getGeminiResponse(prompt);
@@ -42,7 +44,12 @@ Pytanie: ${query}`;
     return response;
   } catch (error) {
     console.error('Błąd podczas generowania odpowiedzi:', error);
-    throw new Error("Nie udało się wygenerować odpowiedzi. Spróbuj ponownie.");
+    toast({
+      title: "Błąd",
+      description: "Nie udało się wygenerować odpowiedzi. Spróbuj ponownie.",
+      variant: "destructive",
+    });
+    throw error;
   }
 };
 
@@ -53,11 +60,6 @@ export const searchRelevantChunks = (query: string): string[] => {
     if (documentChunks.length === 0) {
       console.log("Brak przetworzonych dokumentów w pamięci");
       return [];
-    }
-
-    if (query.toLowerCase() === 'podsumuj') {
-      console.log('Zapytanie o podsumowanie - zwracam wszystkie fragmenty');
-      return documentChunks.map(chunk => chunk.text);
     }
 
     const results = calculateTFIDF(
@@ -102,7 +104,12 @@ export const processDocumentForRAG = async (text: string) => {
     };
   } catch (error) {
     console.error("Błąd podczas przetwarzania dokumentu:", error);
-    throw new Error("Wystąpił błąd podczas przetwarzania dokumentu. Spróbuj ponownie.");
+    toast({
+      title: "Błąd",
+      description: "Wystąpił błąd podczas przetwarzania dokumentu. Spróbuj ponownie.",
+      variant: "destructive",
+    });
+    throw error;
   }
 };
 
@@ -124,6 +131,11 @@ async function extractMainTopics(text: string): Promise<string[]> {
     return topicsString.split('\n').filter(line => line.trim() !== '').map(line => line.replace(/^\d+\.\s*/, '').trim());
   } catch (error) {
     console.error('Error extracting topics:', error);
-    throw new Error("Nie udało się przetworzyć tematów dokumentu.");
+    toast({
+      title: "Błąd",
+      description: "Nie udało się przetworzyć tematów dokumentu.",
+      variant: "destructive",
+    });
+    throw error;
   }
 }
