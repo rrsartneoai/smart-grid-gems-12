@@ -11,16 +11,16 @@ import {
 } from "@/components/ui/dialog";
 
 export function ApiKeySettings() {
-  const [apiKey, setApiKey] = useState(localStorage.getItem('ELEVENLABS_API_KEY') || '');
+  const [apiKey, setApiKey] = useState(localStorage.getItem('AIRLY_API_KEY') || '');
   const [isValidating, setIsValidating] = useState(false);
   const { toast } = useToast();
 
   const validateApiKey = async (key: string) => {
     try {
-      const response = await fetch('https://api.elevenlabs.io/v1/voices', {
+      const response = await fetch('https://airapi.airly.eu/v2/installations/nearest?lat=54.352&lng=18.6466&maxDistanceKM=5', {
         headers: {
           'Accept': 'application/json',
-          'xi-api-key': key
+          'apikey': key
         }
       });
 
@@ -36,7 +36,7 @@ export function ApiKeySettings() {
     setIsValidating(false);
 
     if (isValid) {
-      localStorage.setItem('ELEVENLABS_API_KEY', apiKey);
+      localStorage.setItem('AIRLY_API_KEY', apiKey);
       toast({
         title: "Sukces",
         description: "Klucz API został pomyślnie zapisany.",
@@ -58,27 +58,19 @@ export function ApiKeySettings() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Klucz API ElevenLabs</DialogTitle>
+          <DialogTitle>Klucz API twojej firmy</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="space-y-2">
             <Input
               id="apiKey"
-              placeholder="Wprowadź klucz API ElevenLabs"
+              placeholder="Wprowadź klucz API"
               type="password"
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
             />
             <p className="text-sm text-muted-foreground">
-              Możesz znaleźć swój klucz API w{" "}
-              <a
-                href="https://elevenlabs.io/speech-synthesis"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                panelu ElevenLabs
-              </a>
+              Możesz znaleźć swój klucz API w panelu programistycznym
             </p>
           </div>
           <Button 

@@ -7,14 +7,16 @@ interface Message {
   role: "user" | "assistant";
   content: string;
   timestamp: Date;
-  dataVisualizations?: Array<{
-    type: "consumption" | "production" | "efficiency";
-    title: string;
-  }>;
 }
 
 const formatAirQualityResponse = (data: any[], query: string) => {
   const lowercaseQuery = query.toLowerCase();
+  
+  if (lowercaseQuery.includes("jakość powietrza")) {
+    return data.map(city => 
+      `${city.city}: Jakość powietrza: ${city.quality}\nPM2.5: ${city.pm25} µg/m³\nPM10: ${city.pm10} µg/m³`
+    ).join('\n\n');
+  }
   
   if (lowercaseQuery.includes("pm2.5") || lowercaseQuery.includes("pm10")) {
     return data.map(city => 
@@ -29,7 +31,15 @@ const formatAirQualityResponse = (data: any[], query: string) => {
   }
   
   if (lowercaseQuery.includes("trend") || lowercaseQuery.includes("analiz")) {
-    return "Analiza trendu zostanie przedstawiona na wykresie poniżej...";
+    return "Analiza trendu zanieczyszczeń:\n" + data.map(city => 
+      `${city.city}:\nTrend PM2.5: ${city.pm25_trend}\nTrend PM10: ${city.pm10_trend}`
+    ).join('\n\n');
+  }
+  
+  if (lowercaseQuery.includes("porównaj")) {
+    return "Porównanie jakości powietrza między miastami:\n" + data.map(city => 
+      `${city.city}:\nIndeks jakości: ${city.quality}\nPM2.5: ${city.pm25} µg/m³\nPM10: ${city.pm10} µg/m³`
+    ).join('\n\n');
   }
   
   return data.map(city => 
