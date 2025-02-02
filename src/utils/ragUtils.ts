@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { getGeminiResponse } from '@/lib/gemini';
 import { calculateTFIDF } from './searchUtils';
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GOOGLE_API_KEY || "");
 
@@ -30,7 +30,9 @@ export const generateRAGResponse = async (query: string): Promise<string> => {
 Kontekst:
 ${context}
 
-Pytanie: ${query}`;
+Pytanie: ${query}
+
+Odpowiedz w języku polskim, zwięźle i na temat.`;
 
     console.log('Wysyłam zapytanie do Gemini z kontekstem długości:', context.length);
     const response = await getGeminiResponse(prompt);
@@ -42,11 +44,6 @@ Pytanie: ${query}`;
     return response;
   } catch (error) {
     console.error('Błąd podczas generowania odpowiedzi:', error);
-    toast({
-      variant: "destructive",
-      title: "Błąd",
-      description: "Wystąpił problem z przetwarzaniem zapytania. Spróbuj ponownie.",
-    });
     throw error;
   }
 };
@@ -58,11 +55,6 @@ export const searchRelevantChunks = (query: string): string[] => {
     if (documentChunks.length === 0) {
       console.log("Brak przetworzonych dokumentów w pamięci");
       return [];
-    }
-
-    if (query.toLowerCase() === 'podsumuj') {
-      console.log('Zapytanie o podsumowanie - zwracam wszystkie fragmenty');
-      return documentChunks.map(chunk => chunk.text);
     }
 
     const results = calculateTFIDF(
@@ -129,12 +121,6 @@ async function extractMainTopics(text: string): Promise<string[]> {
     return topicsString.split('\n').filter(line => line.trim() !== '').map(line => line.replace(/^\d+\.\s*/, '').trim());
   } catch (error) {
     console.error('Error extracting topics:', error);
-    return [
-      "Nie udało się przetworzyć dokumentu",
-      "Spróbuj ponownie później",
-      "Sprawdź czy dokument zawiera tekst",
-      "Upewnij się, że dokument jest czytelny",
-      "Skontaktuj się z administratorem systemu"
-    ];
+    return [];
   }
 }

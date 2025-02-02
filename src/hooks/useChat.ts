@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { useAirQualityData } from "@/services/airQualityService";
+import { generateGeminiResponse } from "@/lib/gemini";
+import { generateRAGResponse } from "@/utils/ragUtils";
 
 interface Message {
   role: "user" | "assistant";
@@ -65,10 +67,25 @@ export const useChat = () => {
 
   const { mutate: sendMessage, isPending } = useMutation({
     mutationFn: async (input: string) => {
-      if (!airQualityData) {
-        throw new Error("Brak danych o jakości powietrza");
+      try {
+        // Najpierw próbujemy uzyskać odpowiedź z RAG
+        const ragResponse = await generateRAGResponse(input);
+        if (ragResponse && ragResponse !== "Nie wgrano jeszcze żadnego dokumentu. Proszę najpierw wgrać dokument, aby móc zadawać pytania.") {
+          return ragResponse;
+        }
+
+        // Jeśli nie ma odpowiedzi z RAG, sprawdzamy dane o jakości powietrza
+        if (airQualityData) {
+          return formatAirQualityResponse(airQualityData, input);
+        }
+
+        // Jeśli nie ma danych o jakości powietrza, używamy Gemini API
+        const geminiResponse = await generateGeminiResponse(input);
+        return geminiResponse;
+      } catch (error) {
+        console.error("Error in chat:", error);
+        throw new Error("Nie udało się uzyskać odpowiedzi. Spróbuj ponownie.");
       }
-      return formatAirQualityResponse(airQualityData, input);
     },
     onSuccess: (response) => {
       const newMessage = {
@@ -83,7 +100,7 @@ export const useChat = () => {
       toast({
         variant: "destructive",
         title: "Błąd",
-        description: "Nie udało się uzyskać odpowiedzi. Spróbuj ponownie.",
+        description: error.message || "Nie udało się uzyskać odpowiedzi. Spróbuj ponownie.",
       });
     },
   });
