@@ -10,6 +10,10 @@ interface Message {
 }
 
 const formatAirQualityResponse = (data: any[], query: string) => {
+  if (!data || data.length === 0) {
+    return "Przepraszam, ale nie mogę uzyskać dostępu do danych o jakości powietrza w tym momencie.";
+  }
+
   const lowercaseQuery = query.toLowerCase();
   
   if (lowercaseQuery.includes("jakość powietrza")) {
@@ -59,20 +63,6 @@ export const useChat = () => {
   const { toast } = useToast();
   const { data: airQualityData } = useAirQualityData();
 
-  const clearConversation = () => {
-    setMessages([
-      {
-        role: "assistant",
-        content: "Witaj! Jestem asystentem monitorowania jakości powietrza. Mogę pomóc Ci sprawdzić aktualne poziomy zanieczyszczeń, porównać dane między lokalizacjami lub przeanalizować trendy. W czym mogę Ci pomóc?",
-        timestamp: new Date(),
-      },
-    ]);
-    toast({
-      title: "Konwersacja wyczyszczona",
-      description: "Historia czatu została zresetowana.",
-    });
-  };
-
   const { mutate: sendMessage, isPending } = useMutation({
     mutationFn: async (input: string) => {
       if (!airQualityData) {
@@ -88,7 +78,8 @@ export const useChat = () => {
       };
       setMessages((prev) => [...prev, newMessage]);
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Error in chat:", error);
       toast({
         variant: "destructive",
         title: "Błąd",
@@ -109,6 +100,20 @@ export const useChat = () => {
     setMessages((prev) => [...prev, userMessage]);
     sendMessage(input);
     setInput("");
+  };
+
+  const clearConversation = () => {
+    setMessages([
+      {
+        role: "assistant",
+        content: "Witaj! Jestem asystentem monitorowania jakości powietrza. Mogę pomóc Ci sprawdzić aktualne poziomy zanieczyszczeń, porównać dane między lokalizacjami lub przeanalizować trendy. W czym mogę Ci pomóc?",
+        timestamp: new Date(),
+      },
+    ]);
+    toast({
+      title: "Konwersacja wyczyszczona",
+      description: "Historia czatu została zresetowana.",
+    });
   };
 
   return {

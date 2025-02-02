@@ -42,7 +42,12 @@ Pytanie: ${query}`;
     return response;
   } catch (error) {
     console.error('Błąd podczas generowania odpowiedzi:', error);
-    throw new Error("Nie udało się wygenerować odpowiedzi. Spróbuj ponownie.");
+    toast({
+      variant: "destructive",
+      title: "Błąd",
+      description: "Wystąpił problem z przetwarzaniem zapytania. Spróbuj ponownie.",
+    });
+    throw error;
   }
 };
 
