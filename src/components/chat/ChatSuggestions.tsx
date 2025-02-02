@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useAirQualityData } from "@/services/airQualityService";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const suggestions = [
   {
@@ -32,11 +33,18 @@ interface ChatSuggestionsProps {
 
 export function ChatSuggestions({ onSuggestionClick }: ChatSuggestionsProps) {
   const { data: airQualityData } = useAirQualityData();
+  const { toast } = useToast();
 
   const handleSuggestionClick = (suggestion: string) => {
-    if (airQualityData) {
-      onSuggestionClick(suggestion);
+    if (!airQualityData) {
+      toast({
+        variant: "destructive",
+        title: "Błąd",
+        description: "Nie można pobrać danych o jakości powietrza. Spróbuj ponownie później.",
+      });
+      return;
     }
+    onSuggestionClick(suggestion);
   };
 
   return (

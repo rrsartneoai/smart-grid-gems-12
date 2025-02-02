@@ -23,10 +23,23 @@ export const ExportData = ({ onExport }: ExportDataProps) => {
         return;
       }
       
-      const canvas = await html2canvas(element as HTMLElement);
-      const pdf = new jsPDF();
+      const canvas = await html2canvas(element as HTMLElement, {
+        scale: 2,
+        useCORS: true,
+        logging: true
+      });
+      
       const imgData = canvas.toDataURL('image/png');
-      pdf.addImage(imgData, 'PNG', 10, 10, 190, 0);
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm'
+      });
+      
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save('dane-czujnikow.pdf');
       
       toast({
@@ -34,10 +47,11 @@ export const ExportData = ({ onExport }: ExportDataProps) => {
         description: "Dane zostały wyeksportowane do PDF",
       });
     } catch (error) {
+      console.error('Error exporting to PDF:', error);
       toast({
         variant: "destructive",
         title: "Błąd",
-        description: "Nie udało się wyeksportować danych",
+        description: "Nie udało się wyeksportować danych do PDF",
       });
     }
   };
@@ -54,21 +68,29 @@ export const ExportData = ({ onExport }: ExportDataProps) => {
         return;
       }
       
-      const canvas = await html2canvas(element as HTMLElement);
+      const canvas = await html2canvas(element as HTMLElement, {
+        scale: 2,
+        useCORS: true,
+        logging: true
+      });
+      
       const link = document.createElement('a');
       link.download = 'dane-czujnikow.jpg';
-      link.href = canvas.toDataURL('image/jpeg');
+      link.href = canvas.toDataURL('image/jpeg', 1.0);
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
       
       toast({
         title: "Sukces",
         description: "Dane zostały wyeksportowane do JPG",
       });
     } catch (error) {
+      console.error('Error exporting to JPG:', error);
       toast({
         variant: "destructive",
         title: "Błąd",
-        description: "Nie udało się wyeksportować danych",
+        description: "Nie udało się wyeksportować danych do JPG",
       });
     }
   };
@@ -86,12 +108,14 @@ export const ExportData = ({ onExport }: ExportDataProps) => {
       }
       
       const text = element.textContent || '';
-      const blob = new Blob([text], { type: 'text/plain' });
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.download = 'dane-czujnikow.txt';
       link.href = url;
+      link.download = 'dane-czujnikow.txt';
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
       URL.revokeObjectURL(url);
       
       toast({
@@ -99,10 +123,11 @@ export const ExportData = ({ onExport }: ExportDataProps) => {
         description: "Dane zostały wyeksportowane do TXT",
       });
     } catch (error) {
+      console.error('Error exporting to TXT:', error);
       toast({
         variant: "destructive",
         title: "Błąd",
-        description: "Nie udało się wyeksportować danych",
+        description: "Nie udało się wyeksportować danych do TXT",
       });
     }
   };

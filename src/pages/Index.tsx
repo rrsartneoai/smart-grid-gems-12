@@ -20,6 +20,7 @@ import { Bot, UserCog } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ExperimentsPanel } from "@/components/experiments/ExperimentsPanel";
 import { ApiKeySettings } from "@/components/settings/ApiKeySettings";
+import { AirQualitySpaces } from "@/components/spaces/AirQualitySpaces";
 import '../i18n/config';
 
 const Index = () => {
@@ -122,6 +123,7 @@ const Index = () => {
                     <TabsTrigger value="sensors">{t('sensors')}</TabsTrigger>
                     <TabsTrigger value="files">Wgraj pliki</TabsTrigger>
                     <TabsTrigger value="assistant">Asystent AI</TabsTrigger>
+                    <TabsTrigger value="spaces">Przestrzenie</TabsTrigger>
                     <TabsTrigger value="pomeranian-data">Dane z Pomorskiego</TabsTrigger>
                   </TabsList>
 
@@ -140,6 +142,13 @@ const Index = () => {
                     <div className="space-y-6">
                       <h2 className="text-2xl font-bold">Asystent AI</h2>
                       <Chatbot />
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="spaces">
+                    <div className="space-y-6">
+                      <h2 className="text-2xl font-bold">Przestrzenie</h2>
+                      <AirQualitySpaces />
                     </div>
                   </TabsContent>
 

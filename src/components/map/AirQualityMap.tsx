@@ -1,51 +1,54 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin } from "lucide-react";
-import { useTranslation } from "react-i18next";
-import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card } from "@/components/ui/card";
 
-export const AirQualityMap = () => {
-  const { t } = useTranslation();
-  const [selectedCity, setSelectedCity] = useState("gdansk");
+const cities = [
+  {
+    name: "Gdańsk",
+    url: "https://airly.org/map/pl/#52.22977,21.01178,11"
+  },
+  {
+    name: "Gdynia",
+    url: "https://airly.org/map/pl/#54.5189,18.5305,11"
+  },
+  {
+    name: "Sopot",
+    url: "https://airly.org/map/pl/#54.4418,18.5601,11"
+  },
+  {
+    name: "Słupsk",
+    url: "https://airly.org/map/pl/#54.4641,17.0285,11"
+  },
+  {
+    name: "Ustka",
+    url: "https://airly.org/map/pl/#54.5805,16.8614,11"
+  }
+];
 
-  const cities = {
-    gdansk: "https://aqicn.org/map/poland/pomorskie/gdansk/gdansk-powstancow/pl/",
-    gdynia: "https://aqicn.org/map/poland/pomorskie/gdynia/gdynia-szkolna/pl/",
-    sopot: "https://aqicn.org/map/poland/pomorskie/sopot/sopot-bitwy/pl/",
-    slupsk: "https://aqicn.org/map/poland/pomorskie/slupsk/slupsk-kniaziewicza/pl/",
-    ustka: "https://aqicn.org/map/poland/pomorskie/ustka/ustka-zulawy/pl/"
-  };
-
+export function AirQualityMap() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-xl font-bold flex items-center gap-2">
-          <MapPin className="h-5 w-5" />
-          {t('airQualityMap')}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Tabs value={selectedCity} onValueChange={setSelectedCity} className="w-full">
-          <TabsList className="grid grid-cols-5 w-full">
-            <TabsTrigger value="gdansk">Gdańsk</TabsTrigger>
-            <TabsTrigger value="gdynia">Gdynia</TabsTrigger>
-            <TabsTrigger value="sopot">Sopot</TabsTrigger>
-            <TabsTrigger value="slupsk">Słupsk</TabsTrigger>
-            <TabsTrigger value="ustka">Ustka</TabsTrigger>
-          </TabsList>
-          {Object.entries(cities).map(([city, url]) => (
-            <TabsContent key={city} value={city}>
-              <div className="aspect-video rounded-lg overflow-hidden bg-muted">
-                <iframe
-                  src={url}
-                  className="w-full h-full border-0"
-                  title={`${t('airQualityMap')} - ${city}`}
-                />
-              </div>
-            </TabsContent>
+    <Card className="p-4">
+      <h2 className="text-2xl font-bold mb-4">Mapa jakości powietrza - województwo pomorskie</h2>
+      <Tabs defaultValue="gdansk" className="w-full">
+        <TabsList className="w-full justify-start">
+          {cities.map((city) => (
+            <TabsTrigger key={city.name.toLowerCase()} value={city.name.toLowerCase()}>
+              {city.name}
+            </TabsTrigger>
           ))}
-        </Tabs>
-      </CardContent>
+        </TabsList>
+        {cities.map((city) => (
+          <TabsContent key={city.name.toLowerCase()} value={city.name.toLowerCase()}>
+            <div className="w-full aspect-video">
+              <iframe
+                src={city.url}
+                className="w-full h-full border-0"
+                title={`Mapa jakości powietrza - ${city.name}`}
+                allowFullScreen
+              />
+            </div>
+          </TabsContent>
+        ))}
+      </Tabs>
     </Card>
   );
-};
+}
