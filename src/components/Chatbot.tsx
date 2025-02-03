@@ -6,8 +6,6 @@ import { ChatMessage } from "./chat/ChatMessage";
 import { ChatInput } from "./chat/ChatInput";
 import { ChatHeader } from "./chat/ChatHeader";
 import { ChatSuggestions } from "./chat/ChatSuggestions";
-import { format } from "date-fns";
-import { pl } from "date-fns/locale";
 import { useChat } from "@/hooks/useChat";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import { motion, AnimatePresence } from "framer-motion";
@@ -26,20 +24,7 @@ export function Chatbot() {
 
   const { isRecording, handleVoiceInput } = useSpeechRecognition((transcript) => {
     setInput(transcript);
-    const userMessage = { role: "user" as const, content: transcript, timestamp: new Date() };
     handleSubmit({ preventDefault: () => {} } as React.FormEvent);
-  });
-
-  const conversation = useConversation({
-    apiKey: localStorage.getItem('ELEVENLABS_API_KEY') || '',
-    overrides: {
-      tts: {
-        voiceId: "XB0fDUnXU5powFXDhCwa",
-      },
-    },
-    onError: (error) => {
-      console.error('ElevenLabs error:', error);
-    },
   });
 
   useEffect(() => {
@@ -55,29 +40,6 @@ export function Chatbot() {
     setIsTyping(isPending);
   }, [isPending]);
 
-  const handleStopSpeaking = () => {
-    conversation.endSession();
-  };
-
-  const handleSaveHistory = () => {
-    const historyText = messages
-      .map((msg) => {
-        const time = format(msg.timestamp, "HH:mm", { locale: pl });
-        return `[${time}] ${msg.role === "user" ? "Użytkownik" : "Asystent"}: ${msg.content}`;
-      })
-      .join("\n\n");
-
-    const blob = new Blob([historyText], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `chat-history-${format(new Date(), "yyyy-MM-dd-HH-mm")}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
   useEffect(() => {
     const handleInitialQuery = (event: CustomEvent<string>) => {
       setInput(event.detail);
@@ -92,10 +54,7 @@ export function Chatbot() {
 
   return (
     <Card className="w-full max-w-2xl mx-auto h-[600px] md:h-[700px] flex flex-col bg-background shadow-lg rounded-xl">
-      <div className="border-b p-4">
-        <h2 className="text-xl font-semibold">Asystent Smart grid</h2>
-        <p className="text-sm text-muted-foreground">Monitorowanie jakości powietrza</p>
-      </div>
+      <ChatHeader messages={messages} />
       
       <ScrollArea ref={scrollAreaRef} className="flex-1 p-4 md:p-6 overflow-y-auto">
         {messages.length === 1 && (
