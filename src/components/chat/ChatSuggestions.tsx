@@ -22,8 +22,8 @@ const suggestions = [
     tooltip: "Zobacz jak zmieniają się poziomy zanieczyszczeń w czasie i poznaj prognozy na najbliższe godziny"
   },
   {
-    text: "Porównaj jakość powietrza między lokalizacjami",
-    tooltip: "Porównaj dane o jakości powietrza między różnymi punktami pomiarowymi w regionie"
+    text: "Zobacz jak zmieniają się poziomy zanieczyszczeń w czasie i poznaj prognozy na najbliższe godziny",
+    tooltip: "Analiza historyczna i prognoza zmian poziomów zanieczyszczeń w powietrzu"
   }
 ];
 
@@ -57,7 +57,7 @@ export function ChatSuggestions({ onSuggestionClick }: ChatSuggestionsProps) {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-sm pr-8"
+                  className="text-sm pr-8 whitespace-normal text-left"
                   onClick={() => handleSuggestionClick(suggestion.text)}
                 >
                   {suggestion.text}

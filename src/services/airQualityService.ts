@@ -7,8 +7,12 @@ interface AirQualityData {
   so2: number;
   o3: number;
   co: number;
+  temp: number;
   timestamp: string;
   city: string;
+  quality: string;
+  pm25_trend?: string;
+  pm10_trend?: string;
 }
 
 const cities = [
@@ -23,38 +27,66 @@ export const fetchAirQualityData = async (city: { lat: number; lon: number; name
   const apiKey = localStorage.getItem('AIRLY_API_KEY');
   
   if (!apiKey) {
-    throw new Error('Airly API key not found. Please set your API key in the settings.');
+    throw new Error('Brak klucza API Airly. Proszę skonfigurować klucz w ustawieniach.');
   }
 
-  const response = await fetch(
-    `https://airapi.airly.eu/v2/measurements/point?lat=${city.lat}&lng=${city.lon}`,
-    {
-      headers: {
-        'Accept': 'application/json',
-        'apikey': apiKey
+  try {
+    const response = await fetch(
+      `https://airapi.airly.eu/v2/measurements/point?lat=${city.lat}&lng=${city.lon}`,
+      {
+        headers: {
+          'Accept': 'application/json',
+          'apikey': apiKey
+        }
       }
-    }
-  );
+    );
 
-  if (!response.ok) {
-    if (response.status === 401) {
-      localStorage.removeItem('AIRLY_API_KEY'); // Clear invalid key
-      throw new Error('Invalid Airly API key. Please check your API key in the settings.');
+    if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem('AIRLY_API_KEY');
+        throw new Error('Nieprawidłowy klucz API Airly. Sprawdź swój klucz w ustawieniach.');
+      }
+      throw new Error('Błąd podczas pobierania danych o jakości powietrza');
     }
-    throw new Error('Failed to fetch air quality data');
+
+    const data = await response.json();
+    
+    // Calculate air quality based on PM2.5 and PM10 values
+    const pm25Value = data.current.values.find((v: any) => v.name === 'PM25')?.value || 0;
+    const pm10Value = data.current.values.find((v: any) => v.name === 'PM10')?.value || 0;
+    
+    let quality = "Dobra";
+    if (pm25Value > 25 || pm10Value > 50) {
+      quality = "Umiarkowana";
+    }
+    if (pm25Value > 50 || pm10Value > 100) {
+      quality = "Zła";
+    }
+
+    // Get temperature and adjust if needed
+    let temp = data.current.values.find((v: any) => v.name === 'TEMPERATURE')?.value || 20;
+    if (temp > 50) { // Basic validation for unrealistic temperatures
+      temp = temp / 10; // Adjust if temperature seems unrealistic
+    }
+
+    return {
+      pm25: pm25Value,
+      pm10: pm10Value,
+      no2: data.current.values.find((v: any) => v.name === 'NO2')?.value || 0,
+      so2: data.current.values.find((v: any) => v.name === 'SO2')?.value || 0,
+      o3: data.current.values.find((v: any) => v.name === 'O3')?.value || 0,
+      co: data.current.values.find((v: any) => v.name === 'CO')?.value || 0,
+      temp: parseFloat(temp.toFixed(1)),
+      timestamp: data.current.fromDateTime,
+      city: city.name,
+      quality: quality,
+      pm25_trend: "Stabilny",
+      pm10_trend: "Stabilny"
+    };
+  } catch (error) {
+    console.error('Error fetching air quality data:', error);
+    throw error;
   }
-
-  const data = await response.json();
-  return {
-    pm25: data.current.values.find((v: any) => v.name === 'PM25')?.value || 0,
-    pm10: data.current.values.find((v: any) => v.name === 'PM10')?.value || 0,
-    no2: data.current.values.find((v: any) => v.name === 'NO2')?.value || 0,
-    so2: data.current.values.find((v: any) => v.name === 'SO2')?.value || 0,
-    o3: data.current.values.find((v: any) => v.name === 'O3')?.value || 0,
-    co: data.current.values.find((v: any) => v.name === 'CO')?.value || 0,
-    timestamp: data.current.fromDateTime,
-    city: city.name
-  };
 };
 
 export const useAirQualityData = () => {
@@ -64,7 +96,8 @@ export const useAirQualityData = () => {
       const promises = cities.map(city => fetchAirQualityData(city));
       return Promise.all(promises);
     },
-    retry: false,
-    refetchInterval: 300000 // Refresh every 5 minutes
+    retry: 1,
+    refetchInterval: 300000, // Refresh every 5 minutes
+    staleTime: 240000 // Consider data stale after 4 minutes
   });
 };
