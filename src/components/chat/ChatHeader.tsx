@@ -3,6 +3,7 @@ import { FileText } from "lucide-react";
 import { Message } from "@/types/chat";
 import jsPDF from "jspdf";
 import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
 
 interface ChatHeaderProps {
   messages: Message[];
@@ -13,7 +14,10 @@ export const ChatHeader = ({ messages }: ChatHeaderProps) => {
 
   const handleExport = async (format: 'pdf' | 'txt') => {
     const content = messages
-      .map((msg) => `${msg.role === 'assistant' ? 'Asystent' : 'Użytkownik'}: ${msg.content}`)
+      .map((msg) => {
+        const timestamp = format(msg.timestamp, 'dd.MM.yyyy HH:mm:ss');
+        return `[${timestamp}] ${msg.role === 'assistant' ? 'Asystent' : 'Użytkownik'}: ${msg.content}`;
+      })
       .join('\n\n');
 
     if (format === 'txt') {
@@ -21,7 +25,7 @@ export const ChatHeader = ({ messages }: ChatHeaderProps) => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'rozmowa-asystent.txt';
+      a.download = `rozmowa-asystent-${format(new Date(), 'dd-MM-yyyy-HH-mm')}.txt`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -37,8 +41,18 @@ export const ChatHeader = ({ messages }: ChatHeaderProps) => {
         doc.setFont("helvetica");
         doc.setLanguage("pl");
         
+        // Add title
+        doc.setFontSize(16);
+        doc.text("Historia rozmowy z asystentem", 15, 15);
+        
+        // Add timestamp
+        doc.setFontSize(10);
+        doc.text(`Wygenerowano: ${format(new Date(), 'dd.MM.yyyy HH:mm:ss')}`, 15, 25);
+        
+        // Add content
+        doc.setFontSize(12);
         const splitText = doc.splitTextToSize(content, 180);
-        let yPosition = 20;
+        let yPosition = 35;
         
         for (let i = 0; i < splitText.length; i++) {
           if (yPosition > 280) {
@@ -49,7 +63,7 @@ export const ChatHeader = ({ messages }: ChatHeaderProps) => {
           yPosition += 7;
         }
         
-        doc.save("rozmowa-asystent.pdf");
+        doc.save(`rozmowa-asystent-${format(new Date(), 'dd-MM-yyyy-HH-mm')}.pdf`);
         
         toast({
           title: "Sukces",

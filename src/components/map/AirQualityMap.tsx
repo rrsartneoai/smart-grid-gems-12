@@ -1,4 +1,3 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 
 const cities = [
@@ -26,29 +25,21 @@ const cities = [
 
 export function AirQualityMap() {
   return (
-    <Card className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Mapa jakości powietrza - województwo pomorskie</h2>
-      <Tabs defaultValue="gdansk" className="w-full">
-        <TabsList className="w-full justify-start">
-          {cities.map((city) => (
-            <TabsTrigger key={city.name.toLowerCase()} value={city.name.toLowerCase()}>
-              {city.name}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        {cities.map((city) => (
-          <TabsContent key={city.name.toLowerCase()} value={city.name.toLowerCase()}>
-            <div className="w-full aspect-video">
-              <iframe
-                src={city.url}
-                className="w-full h-full border-0"
-                title={`Mapa jakości powietrza - ${city.name}`}
-                allowFullScreen
-              />
-            </div>
-          </TabsContent>
-        ))}
-      </Tabs>
-    </Card>
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold">Mapa jakości powietrza - województwo pomorskie</h2>
+      {cities.map((city) => (
+        <Card key={city.name} className="p-4">
+          <h3 className="text-xl font-semibold mb-4">{city.name}</h3>
+          <div className="w-full aspect-video">
+            <iframe
+              src={city.url}
+              className="w-full h-full border-0 rounded-lg"
+              title={`Mapa jakości powietrza - ${city.name}`}
+              allowFullScreen
+            />
+          </div>
+        </Card>
+      ))}
+    </div>
   );
 }
