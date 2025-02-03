@@ -34,7 +34,7 @@ export const sensorsData: Record<string, CityData> = {
       {
         icon: <Thermometer className="w-5 h-5" />,
         name: "Temp",
-        value: "21.5",
+        value: "-1.5",
         unit: "°C",
         status: "Good",
         description: sensorDescriptions.temp,
@@ -119,7 +119,7 @@ export const sensorsData: Record<string, CityData> = {
       {
         icon: <Thermometer className="w-5 h-5" />,
         name: "Temp",
-        value: "19.8",
+        value: "-1.8",
         unit: "°C",
         status: "Good",
         description: sensorDescriptions.temp,
@@ -204,7 +204,7 @@ export const sensorsData: Record<string, CityData> = {
       {
         icon: <Thermometer className="w-5 h-5" />,
         name: "Temp",
-        value: "20.2",
+        value: "-1.2",
         unit: "°C",
         status: "Good",
         description: sensorDescriptions.temp,
@@ -289,7 +289,7 @@ export const sensorsData: Record<string, CityData> = {
       {
         icon: <Thermometer className="w-5 h-5" />,
         name: "Temp",
-        value: "19.5",
+        value: "-1.5",
         unit: "°C",
         status: "Good",
         description: sensorDescriptions.temp,
@@ -329,7 +329,7 @@ export const sensorsData: Record<string, CityData> = {
       {
         icon: <Droplet className="w-5 h-5" />,
         name: "Humidity",
-        value: "52",
+        value: "82",
         unit: "%",
         status: "Good",
         description: sensorDescriptions.humidity,
@@ -374,7 +374,7 @@ export const sensorsData: Record<string, CityData> = {
       {
         icon: <Thermometer className="w-5 h-5" />,
         name: "Temp",
-        value: "19.2",
+        value: "-1.2",
         unit: "°C",
         status: "Good",
         description: sensorDescriptions.temp,

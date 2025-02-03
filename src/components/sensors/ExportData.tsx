@@ -3,9 +3,15 @@ import { FileText, Image } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
+import { pl } from "date-fns/locale";
 
 export const ExportData = () => {
   const { toast } = useToast();
+
+  const getCurrentDateTime = () => {
+    return format(new Date(), "dd-MM-yyyy_HH-mm", { locale: pl });
+  };
 
   const handleExportPDF = async () => {
     try {
@@ -22,7 +28,9 @@ export const ExportData = () => {
       const canvas = await html2canvas(element as HTMLElement, {
         scale: 2,
         useCORS: true,
-        logging: false
+        logging: false,
+        allowTaint: true,
+        foreignObjectRendering: true
       });
       
       const imgData = canvas.toDataURL('image/png');
@@ -35,7 +43,7 @@ export const ExportData = () => {
       const pdfHeight = pdf.internal.pageSize.getHeight();
       
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save('raport-czujnikow.pdf');
+      pdf.save(`raport-czujnikow_${getCurrentDateTime()}.pdf`);
       
       toast({
         title: "Sukces",
@@ -66,11 +74,13 @@ export const ExportData = () => {
       const canvas = await html2canvas(element as HTMLElement, {
         scale: 2,
         useCORS: true,
-        logging: false
+        logging: false,
+        allowTaint: true,
+        foreignObjectRendering: true
       });
       
       const link = document.createElement('a');
-      link.download = 'raport-czujnikow.jpg';
+      link.download = `raport-czujnikow_${getCurrentDateTime()}.jpg`;
       link.href = canvas.toDataURL('image/jpeg', 1.0);
       document.body.appendChild(link);
       link.click();
@@ -107,7 +117,7 @@ export const ExportData = () => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = 'raport-czujnikow.txt';
+      link.download = `raport-czujnikow_${getCurrentDateTime()}.txt`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
