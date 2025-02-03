@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { FileText, Image, FilePdf } from "lucide-react";
+import { FileText, Image } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { useToast } from "@/hooks/use-toast";
@@ -130,7 +130,7 @@ export const ExportData = () => {
   return (
     <div className="flex flex-wrap gap-2 p-4">
       <Button onClick={handleExportPDF} variant="outline" className="flex items-center gap-2">
-        <FilePdf className="w-4 h-4" />
+        <FileText className="w-4 h-4" />
         Eksportuj do PDF
       </Button>
       <Button onClick={handleExportJPG} variant="outline" className="flex items-center gap-2">

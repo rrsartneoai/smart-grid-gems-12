@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bot, Save, FileText, FilePdf } from "lucide-react";
+import { Bot, Save, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
   DropdownMenu,
@@ -116,7 +116,7 @@ export function ChatHeader({ messages }: ChatHeaderProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={handleSaveAsPDF} className="flex items-center gap-2">
-            <FilePdf className="h-4 w-4" />
+            <FileText className="h-4 w-4" />
             Zapisz jako PDF
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleSaveAsTXT} className="flex items-center gap-2">

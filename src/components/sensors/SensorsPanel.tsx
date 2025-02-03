@@ -19,13 +19,6 @@ export default function SensorsPanel() {
     sensorsData[city]?.name || city
   );
 
-  const handleExport = () => {
-    toast({
-      title: "Eksport danych",
-      description: "Rozpoczęto eksport danych...",
-    });
-  };
-
   // Add safety check for selected city data
   const selectedCityData = sensorsData[selectedCity];
   if (!selectedCityData) {
@@ -66,7 +59,7 @@ export default function SensorsPanel() {
             <AlertsConfig />
           </TabsContent>
           <TabsContent value="export">
-            <ExportData onExport={handleExport} />
+            <ExportData />
           </TabsContent>
         </Tabs>
       </Card>
