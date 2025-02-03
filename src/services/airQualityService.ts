@@ -63,10 +63,13 @@ export const fetchAirQualityData = async (city: { lat: number; lon: number; name
       quality = "Zła";
     }
 
-    // Get temperature and adjust if needed
-    let temp = data.current.values.find((v: any) => v.name === 'TEMPERATURE')?.value || 20;
-    if (temp > 50) { // Basic validation for unrealistic temperatures
-      temp = temp / 10; // Adjust if temperature seems unrealistic
+    // Get temperature and ensure it's in a reasonable range
+    let temp = data.current.values.find((v: any) => v.name === 'TEMPERATURE')?.value;
+    if (temp === undefined) {
+      temp = 20; // Default temperature if not available
+    } else if (temp > 50 || temp < -50) {
+      // If temperature is outside reasonable range, assume it needs to be adjusted
+      temp = temp / 10;
     }
 
     return {

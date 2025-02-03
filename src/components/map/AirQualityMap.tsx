@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 const cities = [
   {
     name: "Gdańsk",
-    url: "https://airly.org/map/pl/#52.22977,21.01178,11"
+    url: "https://airly.org/map/pl/#54.352,18.6466,11"
   },
   {
     name: "Gdynia",

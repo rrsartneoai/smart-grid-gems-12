@@ -14,7 +14,7 @@ const suggestions = [
     tooltip: "Zobacz szczegółowe pomiary pyłów zawieszonych PM2.5 i PM10, które są głównymi wskaźnikami zanieczyszczenia powietrza"
   },
   {
-    text: "Sprawdź stężenie substancji rakotwórczych",
+    text: "Sprawdź poziomy substancji szczególnie niebezpiecznych dla zdrowia, w tym NO₂, SO₂, O₃ i CO",
     tooltip: "Sprawdź poziomy substancji szczególnie niebezpiecznych dla zdrowia, w tym NO₂, SO₂, O₃ i CO"
   },
   {
@@ -22,8 +22,8 @@ const suggestions = [
     tooltip: "Zobacz jak zmieniają się poziomy zanieczyszczeń w czasie i poznaj prognozy na najbliższe godziny"
   },
   {
-    text: "Zobacz jak zmieniają się poziomy zanieczyszczeń w czasie i poznaj prognozy na najbliższe godziny",
-    tooltip: "Analiza historyczna i prognoza zmian poziomów zanieczyszczeń w powietrzu"
+    text: "Opowiedz mi o wpływie zanieczyszczeń na środowisko i zdrowie",
+    tooltip: "Dowiedz się więcej o wpływie zanieczyszczeń powietrza na ekosystem i zdrowie człowieka"
   }
 ];
 
