@@ -12,7 +12,7 @@ interface ChatHeaderProps {
 export const ChatHeader = ({ messages }: ChatHeaderProps) => {
   const { toast } = useToast();
 
-  const handleExport = async (format: 'pdf' | 'txt') => {
+  const handleExport = async (exportFormat: 'pdf' | 'txt') => {
     const content = messages
       .map((msg) => {
         const timestamp = format(msg.timestamp, 'dd.MM.yyyy HH:mm:ss');
@@ -20,7 +20,7 @@ export const ChatHeader = ({ messages }: ChatHeaderProps) => {
       })
       .join('\n\n');
 
-    if (format === 'txt') {
+    if (exportFormat === 'txt') {
       const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -35,7 +35,7 @@ export const ChatHeader = ({ messages }: ChatHeaderProps) => {
         title: "Sukces",
         description: "Rozmowa została zapisana w formacie TXT",
       });
-    } else if (format === 'pdf') {
+    } else if (exportFormat === 'pdf') {
       try {
         const doc = new jsPDF();
         doc.setFont("helvetica");
