@@ -31,24 +31,40 @@ export const ExportData = () => {
         useCORS: true,
         logging: false,
         allowTaint: true,
-        foreignObjectRendering: true
+        foreignObjectRendering: true,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight
       });
       
       const imgData = canvas.toDataURL('image/png');
+      
+      // Initialize PDF with Polish language support
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'mm',
-        hotfixes: ['px_scaling']
+        hotfixes: ['px_scaling'],
+        compress: true
       });
 
-      // Add font that supports Polish characters
-      pdf.setFont("helvetica");
+      // Configure font and language for Polish characters
+      pdf.setFont("helvetica", "normal");
       pdf.setLanguage("pl");
       
+      // Calculate dimensions while maintaining aspect ratio
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
       
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      const finalWidth = imgWidth * ratio;
+      const finalHeight = imgHeight * ratio;
+      
+      // Center the image on the page
+      const x = (pdfWidth - finalWidth) / 2;
+      const y = (pdfHeight - finalHeight) / 2;
+      
+      pdf.addImage(imgData, 'PNG', x, y, finalWidth, finalHeight);
       pdf.save(`raport-czujnikow_${getCurrentDateTime()}.pdf`);
       
       toast({

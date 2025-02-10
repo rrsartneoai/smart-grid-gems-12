@@ -45,7 +45,11 @@ export function ChatSuggestions({ onSuggestionClick }: ChatSuggestionsProps) {
       });
       return;
     }
+    
+    // Ensure the suggestion text is passed correctly
     onSuggestionClick(suggestion);
+    
+    console.log("Suggestion clicked:", suggestion); // Debug log
   };
 
   return (
@@ -54,11 +58,11 @@ export function ChatSuggestions({ onSuggestionClick }: ChatSuggestionsProps) {
         <TooltipProvider key={index}>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="relative inline-flex items-center">
+              <div className="relative inline-flex items-center w-full sm:w-auto">
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-sm pr-8 whitespace-normal text-left h-auto py-2"
+                  className="w-full text-sm pr-8 whitespace-normal text-left h-auto py-2 min-h-[2.5rem]"
                   onClick={() => handleSuggestionClick(suggestion.text)}
                 >
                   {suggestion.text}
@@ -66,7 +70,7 @@ export function ChatSuggestions({ onSuggestionClick }: ChatSuggestionsProps) {
                 </Button>
               </div>
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent side="bottom" align="start">
               <p className="max-w-xs">{suggestion.tooltip}</p>
             </TooltipContent>
           </Tooltip>
