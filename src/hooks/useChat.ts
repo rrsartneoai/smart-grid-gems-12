@@ -1,9 +1,9 @@
+
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { useAirQualityData } from "@/services/airQualityService";
 import { generateGeminiResponse } from "@/lib/gemini";
-import { generateRAGResponse } from "@/utils/ragUtils";
 
 interface Message {
   role: "user" | "assistant";
@@ -30,6 +30,12 @@ const formatAirQualityResponse = (data: any[], query: string) => {
     ).join('\n\n');
   }
   
+  if (lowercaseQuery.includes("porównaj")) {
+    return "Porównanie jakości powietrza między miastami:\n" + data.map(city => 
+      `${city.city}:\nIndeks jakości: ${city.quality}\nPM2.5: ${city.pm25} µg/m³\nPM10: ${city.pm10} µg/m³`
+    ).join('\n\n');
+  }
+  
   if (lowercaseQuery.includes("rakotwórcz") || lowercaseQuery.includes("substancj")) {
     return data.map(city => 
       `${city.city}:\nNO₂: ${city.no2} µg/m³\nSO₂: ${city.so2} µg/m³\nO₃: ${city.o3} µg/m³\nCO: ${city.co} µg/m³`
@@ -39,12 +45,6 @@ const formatAirQualityResponse = (data: any[], query: string) => {
   if (lowercaseQuery.includes("trend") || lowercaseQuery.includes("analiz")) {
     return "Analiza trendu zanieczyszczeń:\n" + data.map(city => 
       `${city.city}:\nTrend PM2.5: ${city.pm25_trend}\nTrend PM10: ${city.pm10_trend}`
-    ).join('\n\n');
-  }
-  
-  if (lowercaseQuery.includes("porównaj")) {
-    return "Porównanie jakości powietrza między miastami:\n" + data.map(city => 
-      `${city.city}:\nIndeks jakości: ${city.quality}\nPM2.5: ${city.pm25} µg/m³\nPM10: ${city.pm10} µg/m³`
     ).join('\n\n');
   }
   
@@ -68,19 +68,13 @@ export const useChat = () => {
   const { mutate: sendMessage, isPending } = useMutation({
     mutationFn: async (input: string) => {
       try {
-        // Najpierw próbujemy uzyskać odpowiedź z RAG
-        const ragResponse = await generateRAGResponse(input);
-        if (ragResponse && ragResponse !== "Nie wgrano jeszcze żadnego dokumentu. Proszę najpierw wgrać dokument, aby móc zadawać pytania.") {
-          return ragResponse;
-        }
-
-        // Jeśli nie ma odpowiedzi z RAG, sprawdzamy dane o jakości powietrza
+        // Check if we have air quality data to respond
         if (airQualityData) {
           return formatAirQualityResponse(airQualityData, input);
         }
 
-        // Jeśli nie ma danych o jakości powietrza, używamy Gemini API
-        const geminiResponse = await generateGeminiResponse(input);
+        // Fallback to Gemini for general questions about navigation and information
+        const geminiResponse = await generateGeminiResponse(`Odpowiedz profesjonalnie na temat jakości powietrza w województwie pomorskim lub nawigacji po aplikacji. Pytanie: ${input}`);
         return geminiResponse;
       } catch (error) {
         console.error("Error in chat:", error);

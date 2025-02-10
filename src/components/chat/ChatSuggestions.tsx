@@ -45,11 +45,7 @@ export function ChatSuggestions({ onSuggestionClick }: ChatSuggestionsProps) {
       });
       return;
     }
-    
-    // Ensure the suggestion text is passed correctly
     onSuggestionClick(suggestion);
-    
-    console.log("Suggestion clicked:", suggestion); // Debug log
   };
 
   return (
