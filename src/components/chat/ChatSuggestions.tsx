@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { useAirQualityData } from "@/services/airQualityService";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -57,7 +58,7 @@ export function ChatSuggestions({ onSuggestionClick }: ChatSuggestionsProps) {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-sm pr-8 whitespace-normal text-left"
+                  className="text-sm pr-8 whitespace-normal text-left h-auto py-2"
                   onClick={() => handleSuggestionClick(suggestion.text)}
                 >
                   {suggestion.text}

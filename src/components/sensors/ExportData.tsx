@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { FileText, Image } from "lucide-react";
 import html2canvas from "html2canvas";
@@ -36,8 +37,13 @@ export const ExportData = () => {
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF({
         orientation: 'landscape',
-        unit: 'mm'
+        unit: 'mm',
+        hotfixes: ['px_scaling']
       });
+
+      // Add font that supports Polish characters
+      pdf.setFont("helvetica");
+      pdf.setLanguage("pl");
       
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
