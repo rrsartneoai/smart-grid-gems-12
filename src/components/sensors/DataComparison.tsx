@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -5,6 +6,7 @@ import { sensorsData } from "./SensorsData";
 import { HistoricalChart } from './HistoricalChart';
 import { useTranslation } from 'react-i18next';
 import { ComparisonChart } from './ComparisonChart';
+import { ExportButtons } from './ExportButtons';
 
 export const DataComparison = () => {
   const [city1, setCity1] = useState('gdansk');
@@ -24,8 +26,9 @@ export const DataComparison = () => {
   };
 
   return (
-    <Card className="p-6">
+    <Card className="p-6 comparison-data">
       <h3 className="text-lg font-semibold mb-4">{t('Porównanie danych')}</h3>
+      <ExportButtons containerClassName="comparison-data" />
       <div className="grid gap-4 mb-6">
         <div className="flex gap-4">
           <Select value={city1} onValueChange={setCity1}>

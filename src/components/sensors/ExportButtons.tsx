@@ -7,7 +7,11 @@ import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { pl } from "date-fns/locale";
 
-export const ExportData = () => {
+interface ExportButtonsProps {
+  containerClassName: string;
+}
+
+export const ExportButtons = ({ containerClassName }: ExportButtonsProps) => {
   const { toast } = useToast();
 
   const getCurrentDateTime = () => {
@@ -16,7 +20,7 @@ export const ExportData = () => {
 
   const handleExportPDF = async () => {
     try {
-      const element = document.querySelector('.sensors-panel');
+      const element = document.querySelector(`.${containerClassName}`);
       if (!element) {
         toast({
           variant: "destructive",
@@ -38,7 +42,6 @@ export const ExportData = () => {
       
       const imgData = canvas.toDataURL('image/png');
       
-      // Initialize PDF with Polish language support
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'mm',
@@ -46,11 +49,9 @@ export const ExportData = () => {
         compress: true
       });
 
-      // Configure font and language for Polish characters
       pdf.setFont("helvetica", "normal");
       pdf.setLanguage("pl");
       
-      // Calculate dimensions while maintaining aspect ratio
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       const imgWidth = canvas.width;
@@ -60,12 +61,11 @@ export const ExportData = () => {
       const finalWidth = imgWidth * ratio;
       const finalHeight = imgHeight * ratio;
       
-      // Center the image on the page
       const x = (pdfWidth - finalWidth) / 2;
       const y = (pdfHeight - finalHeight) / 2;
       
       pdf.addImage(imgData, 'PNG', x, y, finalWidth, finalHeight);
-      pdf.save(`raport-czujnikow_${getCurrentDateTime()}.pdf`);
+      pdf.save(`raport-czujnikow_${containerClassName}_${getCurrentDateTime()}.pdf`);
       
       toast({
         title: "Sukces",
@@ -83,7 +83,7 @@ export const ExportData = () => {
 
   const handleExportJPG = async () => {
     try {
-      const element = document.querySelector('.sensors-panel');
+      const element = document.querySelector(`.${containerClassName}`);
       if (!element) {
         toast({
           variant: "destructive",
@@ -102,7 +102,7 @@ export const ExportData = () => {
       });
       
       const link = document.createElement('a');
-      link.download = `raport-czujnikow_${getCurrentDateTime()}.jpg`;
+      link.download = `raport-czujnikow_${containerClassName}_${getCurrentDateTime()}.jpg`;
       link.href = canvas.toDataURL('image/jpeg', 1.0);
       document.body.appendChild(link);
       link.click();
@@ -124,7 +124,7 @@ export const ExportData = () => {
 
   const handleExportTXT = () => {
     try {
-      const element = document.querySelector('.sensors-panel');
+      const element = document.querySelector(`.${containerClassName}`);
       if (!element) {
         toast({
           variant: "destructive",
@@ -139,7 +139,7 @@ export const ExportData = () => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `raport-czujnikow_${getCurrentDateTime()}.txt`;
+      link.download = `raport-czujnikow_${containerClassName}_${getCurrentDateTime()}.txt`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
