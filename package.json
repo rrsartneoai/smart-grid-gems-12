@@ -57,7 +57,7 @@
     "html2canvas": "^1.4.1",
     "i18next": "^24.2.0",
     "input-otp": "^1.2.4",
-    "jspdf": "^2.5.2",
+    "jspdf": "^3.0.2",
     "jspdf-autotable": "^3.8.4",
     "langchain": "^0.3.7",
     "leaflet": "^1.9.4",
